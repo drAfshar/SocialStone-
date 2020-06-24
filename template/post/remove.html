@@ -31,7 +31,10 @@
             type: "GET",
             url: "/post/remove/"+id,
             success: function (data) {
-                if (data.state==100) {
+                if (data.response == 'removed'){
+                    window.location.href = '/'+data.username+'/';
+                }
+                else {
                     alert("Mission failed!");
                 }
             }

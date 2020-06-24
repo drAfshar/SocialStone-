@@ -474,7 +474,7 @@ def post_remove(request,pk):
             a.delete()
 
     post.delete()
-    return redirect('/'+post.user.username+'/')
+    return JsonResponse(data={'response':'removed','username':request.user.username})
 
 
 
