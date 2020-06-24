@@ -1,0 +1,166 @@
+{% extends 'shared/_layout.html' %}
+{% block title %}Social | @{{user.username}}{% endblock title %}
+
+
+{% block navbar %}
+    {% include 'shared/navbar.html' %}
+{% endblock navbar %}
+
+{% block content %}
+<div class="container">
+<div class="row" style="background-color: rgb(255, 255, 255); ">
+    <div class="col-3 mt-2" dir="rtl" style="box-sizing: border-box; position: sticky; top: 70px; height: 580px; border-radius: 3px;">
+        {% include 'trend/trend.html' with hashtages=hashtages %}
+            
+            
+    </div>
+
+
+
+    <!--User's Posts-->
+    <div class="col-6" style="margin-top: 14px;" dir="rtl">
+        <div class="m-1">
+        {% for p in post %}
+            {% if p.hidden == False %}
+                <div class="mt-2 p-1" id="post_link" style="width: 100%;">
+                    <a href="/post/{{p.id}}" >
+                        <div class="media mt-2">
+                            <img src="{{p.image.url}}" class="mr-3 p-2" style="border-radius:20px; width: 120px; height: 100px;">
+                            <div class="media-body">
+                            <p class="ml-1 mt-2">{{ p.text|truncatewords:9 }}</p>
+                            <div class="bg-light p-1" style="border-radius: 6px;">
+                                <small class="ml-1"><i class="fas fa-eye"></i> {{ p.view_set.count }}</small> 
+                                <small class="ml-1"><i class="fas fa-heart"></i> {{ p.like_set.count }}</small> 
+                                <small class="ml-1"><i class="far fa-comment-alt"></i> {{ p.comment_set.count }}</small>
+                            </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <hr>
+            {% endif %}
+        {% endfor %}
+    </div>
+    </div>
+
+    <style>
+        #post_link:hover{
+            background-color: rgba(219, 219, 219, 0.048);
+            border-radius: 3px;
+            box-shadow: rgba(0, 0, 0, 0.082) 1px 2px 3px 1px;
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--User Informations-->
+    <div class="col-3" style="box-sizing: border-box; position: sticky; top: 70px; height: 580px; border-radius: 3px;"  dir="rtl" >
+       <div class="card border-muted">
+        <div class="text-center " >
+            <div class="border-muted pt-2">
+                {% if profile.image.url %}
+                <img src="{{profile.image.url}}" style="width: 200px; height: 200px; border-radius: 50%; box-shadow: rgba(0, 0, 0, 0.192) 1px 5px 6px 1px;" alt="">
+                {% else %}
+                <p>NO IMAGE!</p>
+                {% endif %}
+            </div>
+            <div class="text-center mt-1 p-1 m-1">
+                {% if profile.telegram  %}
+                <a href="{{profile.telegram}}" style="text-decoration: none; font-size: 25px;"><i class="fab fa-telegram"></i></a>
+                {% endif %}
+                {% if profile.instagram %}
+                <a href="{{profile.instagram}}" style="text-decoration: none; font-size: 25px; color: mediumvioletred;"><i class="fab fa-instagram"></i></a>
+                {% endif %}
+                {% if profile.youtube %}
+                <a href="{{profile.youtube}}" style="text-decoration: none; font-size: 25px; color: rgba(187, 4, 4, 0.726);"><i class="fab fa-youtube"></i></a>
+                {% endif %}
+                {% if profile.twitter %}
+                <a href="{{profile.twitter}}" style="text-decoration: none; font-size: 25px; color: rgb(0, 149, 168);"><i class="fab fa-twitter"></i></a>
+                {% endif %}
+            </div>
+            {% if request.user.is_authenticated %}
+            {% if request.user.username != user.username %}
+            {% if followed %}
+                <div class="mt-2">
+                    <a href="#" class="btn btn-primary btn-sm" > گفتگو </a>
+                    <button class="btn btn-info btn-sm btn-blo" onclick ="follow({{user.id}})">مشترک</button>
+                </div>
+            {% else %}
+                <div class="mt-2">
+                    <button class="btn btn-success btn-sm btn-blo" onclick ="follow({{user.id}})">اشتراک</button>
+                </div>
+            {% endif %}
+            {% else %}
+                <div class="mt-2 p-2">
+                    <a href="/user/edit" class="btn btn-primary btn-sm btn-block">ویرایش</a>
+    
+                </div>
+            {% endif %}
+            {% endif %}
+
+
+
+            
+
+        </div>
+          <hr>
+            <div dir="rtl" class="p-2">
+                {% if user.first_name and user.last_name %}
+                <strong>نام  : {{user.first_name}} {{user.last_name}}</strong>
+                {% endif %}
+                <p class="mt-1">{{profile.bio}}</p>
+                <p class="mt-1">تلفن : {{profile.phone}}</p>
+                <p class="mt-1">آدرس : {{profile.address}}</p>
+            </div>
+      </div>
+    </div>
+
+    
+</div>
+</div>
+{% endblock content %}
+
+
+
+
+{% block javascripts %}
+        <script type="text/javascript">
+
+                function follow(id) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/follow/"+id,
+                        success: function (response) {
+                            window.location.reload();
+                        }
+                    });
+                }
+                
+                
+
+
+                
+
+           
+
+
+        </script>
+{% endblock javascripts %}
+
+
+
+
+{% block modal%}
+     {% include 'post/add_or_edit.html' %}
+{% endblock modal %}

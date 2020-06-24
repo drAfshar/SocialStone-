@@ -1,0 +1,18 @@
+<div class="card border-primary mb-3" style="max-width: 18rem;background-color: rgba(255, 255, 255, 0.712); ">
+            <div class="card-header bg-transparent border-primary"><h5>گرایشها</h5></div>
+            
+            <div class="card-body text-info">
+                <ul>
+                    {% for hash in hashtages %} 
+                        
+                        <li>   <a href="/post/{{hash.post.id}}">{{ hash.tage }}</a>  </li> 
+                        
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="row">
+                <button class="btn btn-info">پیروان مشترک</button>
+                <button class="btn btn-light"> </button>
+            </div>
+            
+</div>

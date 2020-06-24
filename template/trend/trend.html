@@ -1,0 +1,17 @@
+{% if hashtages %}
+    <div class="card border-muted mb-3" style="max-width: 18rem;background-color: rgba(255, 255, 255, 0.712); ">
+                <div class="card-header bg-transparent border-muted"><h5>گرایشها</h5></div>
+                
+                <div class="card-body text-info">
+                    <ul>
+                        {% for hash in hashtages %} 
+                            {% if t_id and t_id == hash.id  %}
+                                <li>   <a class="text-primary" style="font-style: italic;" href="/trend/{{hash.id}}">{{ hash.tage }}</a>  </li> 
+                            {% else %}
+                                <li>   <a href="/trend/{{hash.id}}">{{ hash.tage }}</a>  </li> 
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+    </div>
+{% endif %}

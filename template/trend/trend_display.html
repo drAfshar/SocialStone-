@@ -1,0 +1,134 @@
+{% extends 'shared/_layout.html' %}
+
+{% block navbar %}
+{% include 'shared/navbar.html' %}
+{% endblock navbar %}
+
+{% block content %}
+    <div class="row mt-3" dir="rtl">
+
+        <div class="col-3" dir="rtl" style="box-sizing: border-box; position: sticky; top: 70px; height: 580px; border-radius: 3px;">
+            <div class="card border-mouted">
+                <div class="card-header">
+                    <h6>اولین منتشر کننده :</h6>
+                </div>
+                <img src="{{trend.user.profile.image.url}}" class="w-100 p-2" style="border-radius:6px;" alt="">
+                <div class="mr-auto pr-3" dir="ltr">
+                   <a href="/{{trend.user.username}}"> <h5>{{trend.user.username}}</h5> </a>
+                </div>
+                <hr>
+                <p class="ml-2">{{trend.user.profile.bio}}</p>
+                <hr>
+                <div>
+                    <h6>follower : {{trend.count}}</h6>
+                </div>
+            </div>
+        </div>
+
+        <!-- Its a column includes informations about trend -->
+        <div class="col-6">
+            <div class="card border-info" dir="rtl">
+                <div>
+                    {% if trend.post.hidden == False %}
+                        <div class="p-1" id="post_link" style="width: 100%;">
+                            <a href="/post/{{trend.post.id}}" >
+                                <div class="media">
+                                    <img src="{{trend.post.image.url}}" class="mr-3 p-2 w-25" style="border-radius:20px;">
+                                    <div class="media-body">
+                                    <p class="ml-1 mt-2">{{ trend.post.text|truncatewords:50 }}</p>
+                                    
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="bg-light card-footer text-center p-1" style="border-radius: 6px;">
+                                <small class="ml-3" style="font-size: 18px;"><i class="fas fa-eye"></i> {{ trend.post.view_set.count }}</small> 
+                                <small class="ml-3" style="font-size: 18px;"><i class="fas fa-heart"></i> {{ trend.post.like_set.count }}</small> 
+                                <small class="ml-3" style="font-size: 18px;"><i class="far fa-comment-alt"></i> {{ trend.post.comment_set.count }}</small>
+                            </div>
+                        </div>
+                    {% endif %}
+            </div>
+            </div>
+
+                
+                    {% for p in posts %}
+                        {% if p.hidden == False %}
+                            {% if p.id != trend.post.id %}
+                                <div class="col-12 bg-white card border-muted mt-3">
+                                    <div>
+                                        
+                                                
+                                        
+                                        <div dir="rtl">
+                                            <div>
+                                            
+                                                <div id="post_link" style="width: 100%;">
+                                                   
+                                                        <div class="media mt-2">
+                                                            
+                                            
+                                                               
+                                                            <div class="media-body">
+                                                                <a href="/post/{{p.id}}" >
+                                                                <div class="media">
+                                                                <img src="{{p.image.url}}" class="mr-3 p-2" style="border-radius:20px; height:120px; width: 150px;">
+                                                                    <div class="mr-4 mt-1 p-1 mb-1">
+                                                                        <p class="ml-1">{{ p.text|truncatewords:8 }}</p>
+                                                                        <br>
+                                                                        <small class="ml-1" style="font-size: 18px;"><i class="fas fa-eye"></i> {{ p.view_set.count }}</small> 
+                                                                        <small class="ml-1" style="font-size: 18px;"><i class="fas fa-heart"></i> {{ p.like_set.count }}</small> 
+                                                                        <small class="ml-1" style="font-size: 18px;"><i class="far fa-comment-alt"></i> {{ p.comment_set.count }}</small>
+                                                                        
+                                                                    
+                                                                    </div>
+                                                                    
+                                                                    
+                                                                </div>
+                                                                
+                                                                </a>
+                                                                    
+                                                                
+                                                            </div>
+                                                            <a href="/{{p.user.username}}">
+                                                                <img style="border-radius:50%; width: 60px; height: 60px; box-shadow:rgb(39, 38, 38) 1px 1px 5px 1px " src="{{p.user.profile.image.url}}" alt="">
+                                                            </a>
+                                                           
+                                                        </div>
+                                                       
+                                                    
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %} 
+                        {% endif %}
+                    {% endfor %}
+                
+            
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <!-- Its a column includes common parts ! -->
+        <div class="col-3" dir="rtl" style="box-sizing: border-box; position: sticky; top: 70px; height: 580px; border-radius: 3px;">
+            {% include 'trend/trend.html' with hashtages=hashtages t_id=trend.id %}
+        </div>
+
+
+
+    </div>
+{% endblock content %}
+
+
+{% block javascripts %}
+{% endblock javascripts %}

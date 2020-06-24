@@ -1,0 +1,227 @@
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" dir="rtl" id="post_add_or_edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form id="post_form" enctype="multipart/form-data">
+        {% csrf_token %}
+      <div class="modal-body bg-white">
+            <div class="form-group bg-white">
+              <div id="head_img_preview">
+                {% if post.image.url %}
+                  <img style="height: 300px; width: 100%;" src="{{post.image.url}}">
+                {% endif %}
+              </div>
+              <!--
+                <input type="hidden" name="post_id" value="{{post_id}}">
+                -->
+                <input type="hidden" class="id" id="id" name="id">
+                <textarea name="text" id="post_text" class="form-control mt-2" style="border:hidden;" onkeyup="word_changes(this)" placeholder="محتوای خود را وارد کنید ..." id="text"  cols="30" rows="9" maxlength="600" required>{% if post.text %} {{post.text}} {% endif %}</textarea>                <strong id="post_length" class="ml-2"></strong>
+                <div class="row p-2 m-1 justify-content-center" id="img_preview"></div>
+                <div class="row p-2 m-1 justify-content-center" id="video_preview"></div>
+                <div id="attachments">
+                {% if post %}
+                  <div class="row justify-content-center">
+                  {% for s in post.attachment_set.all %}
+                    {% if s.type_picture %}
+                    <a href="#" onclick="remove_file({{s.id}})">
+                      <div id="{{s.id}}" onclick="remove_file({{s.id}})">
+                          <img class="d-block"  style="height: 200px; width: 300px; border-radius: 3px; padding: 2px;" src="{{s.file.url}}" alt="">
+                        </div>
+                      </a>
+                    {% else %}
+                    <a href="#" onclick="remove_file({{s.file.id}})">
+                      <div id="{{s.id}}"  >
+                        <video height="200px" width="300px" onclick="remove_file({{s.id}})"  style="border-radius: 3px; padding: 2px;" controls>
+                            <source src="{{s.file.url}}" type='video/mp4'>
+                        </video>
+                      </div>
+                    </a>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="form-group row p-1 justify-content-center bg-dark" >
+                <button type="button" class="btn btn-light m-1" id="upload_btn_header_pic"> تصویر نمایه</button>
+                <input type="file" style="display: none;" name="image" id="header_pic" accept="image/*" onchange="preview_image()">
+
+                <button type="button" class="btn btn-light m-1" id="upload_attach_pics"> افزودن پیوست</button>
+                <input type="file" style="display: none;" name="files" id="attach_pics" accept=".jpg,.png,.mp4" onchange="preview_files()" multiple>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">انصراف</button>
+        <button type="submit" id="post_sub" class="btn btn-primary">پست</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+ 
+
+
+
+<!--Loading-->
+<div class="modal fade bd-example-modal-sm" id="loading_modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="d-flex align-items-center">
+        <strong>Please wait to finish job...</strong>
+        <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+            function word_changes(val) {
+                  var len = val.value.length;
+                  len = 600-len;
+                  if (len<=10) {
+                    $('#post_length').html(len+" !");
+                    $('#post_length').css('color','red');
+                  }else if (len<=100) {
+                    $('#post_length').html(len);
+                    $('#post_length').css('color','orange');
+                  } else{
+                  $('#post_length').html(len);
+                  $('#post_length').css('color','green');
+                  }
+                }
+
+            $("#upload_btn_header_pic").click(function(){
+                    $("#header_pic").click();
+              });
+
+            $("#upload_attach_pics").click(function(){
+                    $("#attach_pics").click();
+
+              });
+
+            $("#upload_attach_video").click(function(){
+                    $("#attach_video").click();
+              });
+
+
+            $("#post_sub").click(function(){
+              $("#post_sub").hide();
+            });
+
+
+            (function($){
+                $("#post_form").submit( function(e){
+                e.preventDefault();
+                var data = new FormData(this);
+                var action = function(d){
+                    console.log(d);
+                };
+                $("#loading_modal").show();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'post_create' %}",
+                    data: data,
+                    contentType:false,
+                    processData:false,
+                    success: function(data){
+                        if (data.state==200) {
+                          $("#post_add_or_edit").hide();
+                          $("#post_sub").show();
+                          window.location.reload();
+                      
+                        }else{
+                          $("#post_sub").show();
+                          $("#post_form").trigger('reset');
+                          $("#post_sub").show();
+                        }
+                    },
+                    fail: function(){
+                          $("#post_sub").show();
+                          $("#post_form").trigger('reset');
+                          $("#post_sub").show();
+    
+                        },
+                });
+                
+                });
+            }(jQuery));
+
+
+
+
+            
+            function preview_files() {
+                i=0;
+                i+=1;
+                if (i==1) {
+                  $('#img_preview').html("");
+                  $('#video_preview').html("");
+                  i=0;
+                }
+                $('#video_preview').show();
+                $('#img_preview').show();
+                 var total_file=0;
+                 total_file=document.getElementById("attach_pics").files.length;
+                for(var i=0;i<total_file;i++)
+                {
+                  var ext = event.target.files[i].name.split('.').pop();
+                  if (ext=='mp4') 
+                  {
+                    $('#video_preview').append("<video width='220' id='video' class='m-1' height='180' controls><source src='"+URL.createObjectURL(event.target.files[i])+"' type='video/mp4'></video>");
+                  }
+                  else if (ext=="jpg" || ext=="png")
+                  {
+                    $('#img_preview').append("<img class='m-1' id='img' style='width:220px ; max-height:180 ; border-radius:3px' src='"+URL.createObjectURL(event.target.files[i])+"'><br>");
+                  } 
+                  ext="";
+                } 
+                }
+
+
+                function preview_image() {
+                  $('#head_img_preview').show();
+                  i=0;
+                  i+=1;
+                  if (i==1) {
+                    $('#head_img_preview').html("");
+                    i=0;
+                  }
+                var total_file=document.getElementById("header_pic").files.length;
+                for(var i=0;i<total_file;i++)
+                {
+                  var ext = $("#header_pic").val().split('.').pop();
+                  if (ext=="jpg" || ext=="png") {
+                    $('#head_img_preview').append("<img class='m-1 mr-2' style='width:100% ; max-height:200px ; border-radius:3px' src='"+URL.createObjectURL(event.target.files[i])+"'><br>");
+                } }
+                
+                }
+
+
+                
+                function remove_file(id) {
+                      $.ajax({
+                        type: "GET",
+                        url: "/file/remove/"+id,
+                        success: function (data) {
+                            if (data.state==200) {
+                                $("#"+id).html("");
+                            }
+                        }
+                      });
+                  }
+
+</script>

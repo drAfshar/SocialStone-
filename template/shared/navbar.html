@@ -1,0 +1,56 @@
+ <div class="sticky-top" dir="rtl"> 
+                <!--Navbar-->
+                <nav class="navbar navbar-expand-sm navbar-light "
+                 style=" 
+                 background-color: rgb(255, 255, 255);
+                 box-shadow: rgba(105, 105, 105, 0.055) 1px 2px 5px 1px;
+                 color: rgba(0, 0, 0, 0.767)
+                 ">
+                    <a class="navbar-brand" style="color:rgba(0, 0, 0, 0.774);" href="/{{request.user.username}}" dir="rtl">{{ request.user.username }}</a>
+                    <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
+                        aria-expanded="false" aria-label="Toggle navigation"></button>
+                    <div class="collapse navbar-collapse" id="collapsibleNavId">
+                        <ul class="navbar-nav mr-auto mt-2 mt-lg-0 text-dark">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="/">خانه <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="post_btn"  >پست</a>
+                            </li>
+                            <li class="nav-item dropdown ">
+                                <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownId">
+                                    <a class="dropdown-item" href="#">Action 1</a>
+                                </div>
+                            </li>
+                        </ul>
+                        
+                    </div>
+                    <div class="justify-content-center">
+                        <form class="form-inline my-2 justify-content-cneter my-lg-0">
+                            <input class="form-control mr-sm-1" type="text" placeholder="جستجو">
+                            <a type="submit" class="ml-1 btn btn-light" style="width: 50px;"><i class="fas fa-search" style="font-size: 21px;"></i></a>
+                        </form>
+                    </div>
+                </nav>
+            </div>
+
+
+
+
+
+<script>
+    $('#post_btn').on('click',function(){
+        $('#post_add_or_edit').modal('show')
+        $('#img_preview').hide();
+        $('#img_video').hide();
+        $('#head_img_preview').hide();
+        $('#post_sub').html("ثبت");
+        $('#attachments').hide();
+        $("#post_text").val("");
+        $("#id").val('0');
+    });
+
+   
+
+</script>

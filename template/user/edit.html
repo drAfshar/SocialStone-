@@ -1,0 +1,167 @@
+{% extends 'shared/_layout.html' %}
+
+{% block title %} Social | Profile Edit{% endblock title %}
+
+
+{% block content %}
+
+<div class="row ">
+ 
+
+
+    <!--User's informations edit -->
+    <div class="col-8 mt-4 " style="border-radius: 3px;"  dir="rtl">
+        <div class="col-8 ml-5 ">
+            <div class="row" style="border-radius: 3px;">
+                <div class="form-group col-6">
+                    <label>نام</label>
+                    <input type="text" id="firstname" class="form-control" value="{{request.user.first_name}}">
+                </div>
+                <div class="form-group col-6">
+                    <label>نام خانوادگی</label>
+                    <input type="text" id="lastname" class="form-control" value="{{request.user.last_name}}">
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-8 ml-5" dir="ltr" style="border-radius: 3px;">
+            <div class="form-group">
+                <label>تلگرام</label>
+                <input type="url" id="telegram" value="{{profile.telegram}}" class="form-control">
+                <a href="{{profile.telegram}}" style="text-decoration: none;" class="small">{{profile.telegram}}</a>
+            </div>
+            <div class="form-group" dir="ltr">
+                <label>اینستاگرام</label>
+                <input type="url" id="instagram" value="{{profile.instagram}}" class="form-control">
+                <a href="{{profile.instagram}}" style="text-decoration: none;" class="small">{{profile.instagram}}</a>
+            </div>
+            <div class="form-group" dir="ltr">
+                <label>آپارات</label>
+                <input type="url" id="aparat" value="{{profile.aparat}}" class="form-control">
+                <a href="{{profile.aparat}}" style="text-decoration: none;" class="small">{{profile.aparat}}</a>
+            </div>
+            <div class="form-group" dir="ltr">
+                <label>یوتوب</label>
+                <input type="url" id="youtube" value="{{profile.youtube}}" class="form-control">
+                <a href="{{profile.youtube}}" style="text-decoration: none;" class="small">{{profile.youtube}}</a>
+            </div>
+            <div class="form-group" dir="ltr">
+                <label>تویتر</label>
+                <input type="url" id="twitter" value="{{profile.twitter}}" class="form-control">
+                <a href="{{profile.twitter}}" style="text-decoration: none;" class="small">{{profile.twitter}}</a>
+            </div>
+        </div>
+      
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--User profile informations edit-->
+    <div class="col-4 bg-light" style=" height: 655px; border-radius: 3px; box-shadow: rgba(0, 0, 0, 0.199) 1px 8px 15px 1px;"  dir="rtl" >
+        <div class="text-center mt-1" >
+            <form method="post" id="pic-upload_form" action="{% url 'upic' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+            <a href="#" id="upload_btn">
+            <img src="{{profile.image.url}}" style="width: 200px; height: 200px; border-radius: 50%; box-shadow: rgba(3, 3, 3, 0.897) 1px 10px 15px 1px;" alt="">
+            </a>
+            <input type="file" name="image" id="img_upload" 
+            style="display: none;"
+            accept="image/*"
+            >
+            <button type="submit" id="img_sub" class="btn btn-dark btn-sm">آپلود تصویر</button>
+        </form>
+        </div>
+        
+        <hr>
+        <div class="col-12 dir="rtl">
+            <div class="form-group"> 
+
+                {% csrf_token %}
+            
+                <input type="text" id="username" placeholder="نام کاربری" class="form-control" value="{{profile.user.username}}" minlength="5" maxlength="20" required>
+                <a href="" class="small ml-2" style="text-decoration: none;">تغییر رمز عبور !</a>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" id="bio" maxlength="200" rows="3" placeholder="در مورد خود و شغلتان بنویسید..." >{{profile.bio}}</textarea>
+            </div>
+            <div class="form-group"> 
+                <input placeholder="تلفن همراه" id="phone" type="text" value="{{profile.phone}}" class="form-control">
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" id="address" maxlength="150" rows="3" placeholder="نشانی محل کار..." >{{profile.address}}</textarea>
+            </div>
+        </div>
+        <hr>
+        <div class="ml-2">
+            <button class="btn btn-primary" id="submit" style="width: 100px;"> ذخیره </button>
+            <a href="/{{profile.user.username}}" style="text-decoration: none;" class="btn btn-dark" style="width: 100px;"> انصراف </a>
+        </div>
+
+    </div>
+
+</div>
+{% endblock content %}
+
+
+
+
+
+{% block javascripts %}
+    <script>
+
+            $('#submit').click(function(e){
+                    $.ajax({
+                        type: 'POST',
+                        url: "{% url 'user_edit' %}",
+                        data: {
+                            username : $('#username').val(),
+                            bio : $('#bio').val(),
+                            phone : $('#phone').val() , 
+                            address : $('#address').val(),
+                            firstname : $('#firstname').val(),
+                            lastname : $('#lastname').val(),
+                            telegram :  $('#telegram').val(),
+                            instagram : $('#instagram').val(),
+                            youtube : $('#youtube').val(),
+                            aparat : $('#aparat').val(),
+                            twitter : $('#twitter').val(),
+                            action : 'user_info',
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        },
+                        //dataType:'Json',
+                        success: function (data) {
+                            if (data.state == 140) {
+                                alert('username used before but other changes saved!');
+                                window.location.href="/"+data.username+"/";
+                            }else if (data.state==200) {
+                                window.location.href="/"+data.username+"/";
+                            }else{
+                                alert('Mission Failed !');
+                            }
+                        }
+                    });
+            });
+
+    
+            $("#upload_btn").click(function () {
+                 $("#img_upload").click();
+            });
+           
+
+          
+
+
+    </script>
+{% endblock javascripts %}

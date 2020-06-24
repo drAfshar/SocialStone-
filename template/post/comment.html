@@ -1,0 +1,76 @@
+<!-- Modal -->
+<div class="modal fade" dir="rtl" id="comment_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="comment_modal_label">دیدگاه</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="com_form" action="" method="post">{% csrf_token %}
+      <div class="modal-body">
+            <div class="form-group">
+                <input type="hidden" id="comment_id">
+                <input type="hidden" id="post_id" value="{{post_id}}">
+                <textarea name="comment" id="comment" onkeyup="word_conter(this)" cols="30" rows="5" class="form-control" maxlength="300" ></textarea>
+                <p id="length" class="ml-2" style="color: rgb(0, 150, 12);">300</p>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">انصراف</button>
+        <button type="button" id="sub_comment" class="btn btn-primary">ثبت دیدگاه</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<script>
+    function word_conter(val) {
+      var len = val.value.length;
+      len =300-len;
+      if (len<=10) {
+        $('#length').html(len+" !");
+        $('#length').css('color','red');
+      }else if (len<=60) {
+        $('#length').html(len);
+        $('#length').css('color','orange');
+      } else{
+      $('#length').html(len);
+      $('#length').css('color','green');
+      }
+    }
+
+
+
+    $('#sub_comment').on('click',function(){
+        $.ajax({
+          type: "POST",
+          url: "{% url 'comment_create' %}",
+          data: {
+            comment_id:$('#comment_id').val(),
+            text:$('#comment').val(),
+            post_id:$('#post_id').val(),
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+          },
+          success: function (data) {
+            if (data.state=200) {
+                window.location.reload();
+            }else if (data.state==100) {
+              alert('sss');
+            }
+          }
+        });
+    });
+
+</script>

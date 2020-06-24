@@ -1,0 +1,15 @@
+box-sizing: border-box; direction: ltr; position: sticky; top: 80px;
+
+
+
+
+<div dir="auto" class="css-901oao r-1re7ezh r-1k78y06 r-a023e6 r-16dba41 r-ad9z0x r-bcqeeo r-qvutc0">????? ???? ?? <div class="css-1dbjc4n r-xoduu5"><a href="/TheCoffeeLvr" role="link" data-focusable="true" class="css-4rbku5 css-18t94o4 css-901oao css-16my406 r-1n1174f r-1loqt21 r-1k78y06 r-ad9z0x r-bcqeeo r-qvutc0"><span class="css-901oao css-16my406 r-1k78y06 r-ad9z0x r-bcqeeo r-qvutc0">@TheCoffeeLvr</span></a></div> <div class="css-1dbjc4n r-xoduu5"><a href="/NFrechen" role="link" data-focusable="true" class="css-4rbku5 css-18t94o4 css-901oao css-16my406 r-1n1174f r-1loqt21 r-1k78y06 r-ad9z0x r-bcqeeo r-qvutc0"><span class="css-901oao css-16my406 r-1k78y06 r-ad9z0x r-bcqeeo r-qvutc0">@NFrechen</span></a></div> <span class="css-901oao css-16my406 r-1n1174f r-1k78y06 r-ad9z0x r-bcqeeo r-qvutc0"><span class="css-901oao css-16my406 r-1k78y06 r-ad9z0x r-bcqeeo r-qvutc0">?</span></span> <div class="css-1dbjc4n r-xoduu5"><a href="/jewelwilson51" role="link" data-focusable="true" class="css-4rbku5 css-18t94o4 css-901oao css-16my406 r-1n1174f r-1loqt21 r-1k78y06 r-ad9z0x r-bcqeeo r-qvutc0"><span 
+
+
+class="css-901oao css-16my406 r-1k78y06 r-ad9z0x r-bcqeeo r-qvutc0">@jewelwilson51</span></a></div></div>
+
+
+
+
+<div class="css-1dbjc4n"><div lang="en" dir="auto" class="css-901oao r-hkyrab r-1qd0xha r-a023e6 r-16dba41 r-ad9z0x r-bcqeeo r-bnwqim r-qvutc0">
+<span class="css-901oao css-16my406 r-1k78y06 r-ad9z0x r-bcqeeo r-qvutc0">Take all the time you need to ponder this 'un </span><span class="css-901oao css-16my406 r-1k78y06 r-vw2c0b r-ad9z0x r-bcqeeo r-qvutc0"></span><span class="r-18u37iz"><a href="/hashtag/MAGA?src=hashtag_click" dir="ltr" role="link" data-focusable="true" class="css-4rbku5 css-18t94o4 css-901oao css-16my406 r-1n1174f r-1loqt21 r-1qd0xha r-vw2c0b r-ad9z0x r-bcqeeo r-qvutc0">#MAGA</a></span><span class="css-901oao css-16my406 r-1k78y06 r-vw2c0b r-ad9z0x r-bcqeeo r-qvutc0"></span><span class="css-901oao css-16my406 r-1k78y06 r-ad9z0x r-bcqeeo r-qvutc0">'ts</span></div></div>

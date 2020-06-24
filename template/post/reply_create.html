@@ -1,0 +1,99 @@
+<!-- Modal -->
+<div class="modal fade" id="reply_create_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">پاسخ</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST" id="reply_form">{% csrf_token %}
+        <div class="modal-body">
+            <div class="text-muted ml-1" id="username_header"></div>
+            <input type="hidden" id="id">
+            <input type="hidden" id="username">
+            <input type="hidden" id="reply_id">
+            <input type="hidden" id="comment_id">
+            <div class="form-group">
+                <textarea name="reply" id="reply" class="form-control" onkeyup="word_counter_reply(this)" maxlength="300" cols="30" rows="5"></textarea>
+                <p id="length_r" class="ml-2" style="color: rgb(0, 150, 12);">300</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">انصراف</button>
+            <button type="button" id="sr" onclick="sub_reply()" class="btn btn-primary">ثبت پاسخ</button>
+            <button type="button" id="er" onclick="edit_reply()" class="btn btn-info">ویرایش</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<script>
+
+    function word_counter_reply(val) {
+      var len = val.value.length;
+      len =300-len;
+      if (len<=10) {
+        $('#length_r').html(len+" !");
+        $('#length_r').css('color','red');
+      }else if (len<=60) {
+        $('#length_r').html(len);
+        $('#length_r').css('color','orange');
+      } else{
+      $('#length_r').html(len);
+      $('#length_r').css('color','green');
+      }
+    }
+
+
+
+    function sub_reply() {
+      
+        $.ajax({
+            type: "POST",
+            url: "{% url 'reply_create' %}",
+            data: {
+                comment_id : $('#comment_id').val(),
+                text : $('#reply').val(),
+                username : $('#username').val(),
+                reply_id : $('#reply_id').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            },
+            
+            success: function (data) {
+                if (data.state == 200) {
+                  window.location.reload();
+                }
+            }
+        });
+      }
+
+
+
+      function edit_reply() {
+              $.ajax({
+                type: "POST",
+                url: "{% url 'reply_edit' %}",
+                data: {
+                  id:$('#id').val(),
+                  text:$('#reply').val(),
+                  csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function (data) {
+                  if (data.state==200) {
+                    $('#reply_text'+data.id).html("");
+                    $('#reply_text'+data.id).html(data.text);
+                    $('#reply_create_modal').modal('hide');
+                  }
+                }
+              });
+        }
+
+</script>

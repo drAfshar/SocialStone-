@@ -1,0 +1,305 @@
+{% extends 'shared/_layout.html' %}
+
+
+{% block title %} Social | Post
+{% endblock title %}
+
+{% block navbar %}
+{% include "shared/navbar.html" %}
+{% endblock navbar %}
+
+{% block content %}
+
+<div class="container">
+<div class="row ">
+
+
+
+  <div class="col-3 mt-2" dir="rtl" style="box-sizing: border-box; position: sticky; top: 70px; height: 580px; border-radius: 3px; ">
+    {% include 'trend/trend.html' with hashtages=hashtages %} 
+  </div>
+
+
+
+<!--MIDDLE COL-->
+<div class="col-9 mt-2" id="parent" dir="rtl" >
+  <div id="child">
+  <!--CARD-->
+    <div class="card border-muted">
+
+        <!--SLIDER-->
+        <div id="headercarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner" style="background-color: rgb(0, 0, 0);" >
+              <div class="carousel-item active" data-interval="200000">
+                <img src="{{post.image.url}}" style="width: 100%; height: 350px;" class="d-block w-100" alt="...">
+              </div>
+              {% for s in post.attachment_set.all %}
+                {% if s.type_picture %}
+                <div class="carousel-item"  data-interval="200000">
+                    <img class="d-block w-100" style="height: 350px; border-radius: 3px;" src="{{s.file.url}}" alt="">
+                </div>
+              {% else %}
+              <div class="carousel-item text-center" style="border-radius: 3px;" data-interval="200000">
+                <video height="350px" class="w-75" style="border-radius: 3px;" controls>
+                    <source src="{{s.file.url}}" type='video/mp4'>
+                </video>
+              </div>
+              {% endif %}
+            {% endfor %}
+            </div>
+            {% if post.attachment_set.all %}
+            <a class="carousel-control-prev mr-3" href="#headercarousel" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="false"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next ml-3" href="#headercarousel" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="false"></span>
+              <span class="sr-only">Next</span>
+            </a>
+            {% endif %}
+          </div>
+          <!--END SLIDER-->
+
+       <!--SITUATION BAR-->
+        <div class=" bg-white mt-1 justify-content-center row">
+        <a href="/{{post.user.username}}" class=" btn btn-white " style="color:rgba(5, 5, 5, 0.74); font-size: 25px;"><i class="fas fa-user-circle"></i></a>
+        <button class=" btn btn-white " style="color:rgb(7, 12, 12); font-size: 20px;" data-toggle="modal" data-target="#view_list_modal" ><i class="fas fa-eye"></i> {{post.view_set.count}} </button>
+        {% if request.user.is_authenticated %}
+        <button class=" btn btn-white" onclick="comment_create()" style="color:rgba(5, 5, 5, 0.884); font-size: 20px;"><i class="far fa-comment-alt"></i> {{post.comment_set.count}} </button>
+        <div id="like_change">
+        {% if post_like %}
+        <button class=" btn btn-white " onclick="like({{post.id}})" id="liked" style="color: crimson; font-size: 20px;"><i class="fas fa-heart"></i> {{post.like_set.count}} </button>
+        {% else %}
+        <button class=" btn btn-white " onclick="like({{post.id}})" id="unliked" style="color: crimson; font-size: 20px;"><i class="far fa-heart"></i> {{post.like_set.count}} </button>
+        {% endif %}  
+        </div>
+        {% if post.user.username == request.user.username %}
+        <button class=" btn btn-white " id="post_edit_btn" style="color: rgba(3, 28, 139, 0.651); font-size: 20px;"><i class="fas fa-edit"></i> </button>
+        <button class=" btn btn-white " id="post_remove_btn" style="color: rgba(59, 58, 58, 0.966); font-size: 20px;"><i class="fas fa-trash"></i> </button>
+        {% endif %}
+        {% else %}
+        
+        <button class=" btn btn-white disabled " style="color: crimson; font-size: 20px;"><i class="far fa-heart"></i> {{post.like_set.count}} </button>
+
+        
+        {% endif %}
+
+        </div>
+       <!--END SITUATION BAR-->
+        
+       <!--POST PROPERTIES-->
+        <div class=" mt-1 card-body bg-light ">
+          <h5 class="card-title">{{request.first_name}} {{request.last_name}}</h5>
+          <p class="card-text">{{post.text}}</p>
+          <p class="card-text"><small class="text-muted">{{post.pub_date}}</small></p>
+        </div>
+        <!--END POST PROPERTIES-->
+      </div>
+      <!--END CARD-->
+        <hr>
+      <!--COMMENTS-->
+        <div class="mt-1 col-12 p-2 card border-muted" id="comments" style="border-radius: 3px;" dir="rtl">
+            {% for c in comment %}
+              <ul class="list-unstyled p-2" id="com_{{c.id}}" style="border-radius: 3px;">
+                <li class="media">
+                  <a href="/{{c.user.username}}" style="text-decoration: none;">
+                  <img src="{{c.user.profile.image.url}}" id="c_image" 
+                  style="width: 100px; height: 100px; border-radius:50% ; box-shadow: rgba(0, 0, 0, 0.63) 1px 1px 4px 1px;" 
+                  class="mr-3" alt="...">
+                  <div class="media-body">
+                    <h5 class="mt-0 mb-1" id="c_username">{{c.user.username}}</h5>
+                  </a>
+                      <p id="c_text">
+                        {{c.text}}
+                      </p>
+                      <p>{{c.like.user.username}}</p>
+                      <div class="row mr-1">
+                    <div class="row mr-1 ml-auto" id="comment_like{{c.id}}">
+                    {% for l in c.like_set.all  %}
+                      
+                        {% if l.user == request.user %}
+                      <i style="color:rgb(73, 73, 75); font-size: 15px;" class="fas fa-user-circle"></i>
+                        {% endif %}
+                    {% endfor %}
+                       <a class="ml-1" href="#" onclick="comment_like({{c.id}})" style="color:rgb(73, 73, 75); font-size: 18px; text-decoration: none;"><i class="fas fa-thumbs-up" ></i> {{c.like_set.count}}</a>
+                       
+
+                      </div>
+                      
+                      {% if c.user == request.user %}
+                      <a class=" btn btn-white " onclick="comment_edit({{c.id}} ,'{{c.text}}')" style="color: rgba(7, 8, 15, 0.548); font-size: 15px;"><i class="fas fa-edit"></i> </a>
+                      <a class=" btn btn-white " onclick="comment_remove({{c.id}})" style="color: rgba(7, 8, 15, 0.548); font-size: 15px;"><i class="fas fa-trash"></i> </a>
+                      {% else %}
+                      <a class="ml-2" href="#" onclick="reply_create({{c.id}},'{{c.text}}')">
+                        پاسخ
+                      </a>
+                      {% endif %}
+                      </div>
+                      <hr>
+                      <a class="ml-2" data-toggle="collapse" href="#replies_collapse{{c.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        پاسخ ها
+                      </a>
+                      {% include 'post/reply_create.html' with id=c.id %}
+                      <div class="collapse mt-1" id="replies_collapse{{c.id}}">
+                        <div class="">
+                          
+                            {% include 'post/reply.html' with id=c.id replies=replies %}
+                            
+                        </div>
+                      </div>
+                      
+                  </div>
+                </li>
+                <hr>
+              </ul>
+              
+              
+            {% endfor %}
+        </div>
+      <!--END COMMENTS-->
+    </div>  
+</div>
+<!--END MIDDLE COL-->
+
+<!--a class="ml-auto" onclick="comment_like({{c.id}})" style="color:crimson; font-size: 18px; text-decoration: none;" href="#"><i class="fas fa-heart"></i> {{c.like_set.count}}</a>-->
+
+
+
+
+
+
+</div>
+</div>
+
+
+
+
+
+{% endblock content %}
+
+
+{% block javascripts %}
+    <script>
+
+        function like(id) {
+          $.ajax({
+            type: "GET",
+            url: "/ajax/like/"+id,
+            success: function (data) {
+              if (data.state==100) {
+                $('#like_change').html("");
+                $('#like_change').html(" <button class=' btn btn-white ' onclick='like({{post.id}})' id='unliked' style='color: crimson; font-size: 20px;'><i class='far fa-heart'></i> "+data.count+" </button>");
+              }else if (data.state==200) {
+                $('#like_change').html("");
+                $('#like_change').html(" <button class=' btn btn-white ' onclick='like({{post.id}})' id='unliked' style='color: crimson; font-size: 20px;'><i class='fas fa-heart'></i> "+data.count+" </button>");
+              }
+            }
+          });
+        }
+
+
+        function comment_like(id) {
+          $.ajax({
+            type: "GET",
+            url: "/comment/like/"+id,
+            dataType:'json',
+            success: function (data) {
+              if (data.state == 200) {
+                  $('#comment_like'+id).html("");
+                  $('#comment_like'+id).html("<i style='color:rgb(73, 73, 75); font-size: 15px;' class='fas fa-user-circle'></i>"+" <a class='ml-1' id='btn_like' onclick='comment_like("+data.id+")' style='color:rgb(73, 73, 75); font-size: 18px; text-decoration: none;'><i class='fas fa-thumbs-up'></i> "+data.count+"</a>");
+              }else if (data.state==100) {
+                  $('#comment_like'+id).html("");
+                  $('#comment_like'+id).html(" <a class='ml-1' id='btn_like' onclick='comment_like("+data.id+")' style='color:rgb(73, 73, 75); font-size: 18px; text-decoration: none;'><i class='fas fa-thumbs-up'></i> "+data.count+"</a>");
+              }else{
+                alert('Mission faild!');
+              }
+            }
+          });
+          
+        }
+
+
+        function reply_create(id ,text ,username) {
+              $("#username").val("");
+              $("#comment_id").val("");
+              $("#reply_id").val("");
+              $("#reply").val("");
+              $("#username_header").html(text+"<hr>");
+              $("#reply_create_modal").modal('show');
+              $("#sr").show();
+              $("#er").hide();
+              $("#comment_id").val(id);
+          }
+
+          function comment_edit(id ,text) {
+              $('#comment_id').val(id);
+              $('#comment_modal').modal('show');
+              $('#comment').val(text);
+              $('#comment_modal_label').html("ویرایش دیدگاه");
+              $('#sub_comment').html("ویرایش");
+            }
+
+            function comment_create() {
+              $('#comment_id').val(0);
+              $('#comment_modal').modal('show');
+              $('#comment').val("");
+              $('#comment_modal_label').html(" دیدگاه");
+              $('#sub_comment').html("ثبت");
+            }
+
+
+          $('#post_edit_btn').on('click',function(){
+              $('#post_add_or_edit').modal('show');
+              $('#img_preview').show();
+              $('#img_video').show();
+              $('#head_img_preview').show();
+              $('#post_sub').html("ویرایش");
+              $('#attachments').show();
+              $(".id").val('{{post.id}}');
+              $.ajax({
+                type: "GET",
+                url: "/post/taker/"+'{{post.id}}',
+                success: function (data) {
+                  if (data.state=200) {
+                    $("#post_text").val(data.text);
+                  }
+                }
+              });
+          });
+          
+
+          $('#post_remove_btn').on('click',function(){
+              $("#remove_modal").modal('show');
+              $('#delete_id').val('{{post.id}}');
+              $('#post_delete').show();
+              $('#comment_delete').hide();
+              $('#reply_delete').hide();
+              $('#remove_modal_lable').html("حذف پست");
+              $('#remove_text').html("آیا از حذف این پست مطمئن هستید؟");
+          });
+
+          function comment_remove(id) {
+              $("#remove_modal").modal('show');
+              $('#delete_id').val(id);
+              $('#post_delete').hide();
+              $('#comment_delete').show();
+              $('#reply_delete').hide();
+              $('#remove_modal_lable').html("حذف نظر");
+              $('#remove_text').html("آیا از حذف این نظر مطمئن هستید؟");
+            }
+
+
+
+    </script>
+{% endblock javascripts %}
+
+{% block modal %}
+    {% include 'post/view_list.html' with view=views %}
+    {% include 'post/comment.html' with post_id=post.id %}
+    {% include 'post/add_or_edit.html' with post=post %}
+    {% include 'post/remove.html' %}
+{% endblock modal %}
+
+
+
+

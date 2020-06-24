@@ -1,0 +1,171 @@
+{% for r in replies %}
+<div id="com_{{r.id}}">
+    {% if r.comment.id == id and r.reply_to_reply == False and r.hidden == False  %}
+
+    <hr>
+  <div class="mr-auto" >
+    <div class="media p-2">
+        <img src="{{r.user.profile.image.url}}" 
+        style=" width: 70px; height: 70px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.63) 1px 1px 2px 1px;" 
+        class="ml-3" alt="...">
+        <div class="media-body">
+          
+          <h5 class="mt-0 mb-1 ml-3"><a href="/{{r.user.username}}">{{r.user.username}}</a></h5>
+            <p class="ml-2 col-12"  id="reply_text{{r.id}}">
+                {{r.text}}
+            </p>
+                <div class="row mr-2" style="justify-content: flex-end;">
+                  <div  id="reply_like{{r.id}}" >
+                      {% for l in r.like_set.all  %}
+                                
+                                  {% if r.user == request.user %}
+                                    <sup>
+                                    <i style="color:rgb(73, 73, 75); font-size: 15px;" class="fas fa-user-circle"></i>
+                                    </sup>
+                                  {% endif %}
+
+                      {% endfor %}
+                                <a class="ml-1" onclick="reply_like({{r.id}})" style="color:rgb(73, 73, 75); font-size: 15px; text-decoration: none;" href="#"><i class="fas fa-thumbs-up" ></i> {{r.like_set.count}}</a>                                    
+                  </div>
+
+                  {% if request.user.is_authenticated %}
+                    {% if r.user == request.user %}
+                        <a class=" btn btn-white " onclick="reply_edit({{r.id}} ,'{{r.text}}')" style="color: rgba(7, 8, 15, 0.548); font-size: 15px;"><i class="fas fa-edit"></i> </a>
+                        <a class=" btn btn-white " onclick="reply_remove({{r.id}})" style="color: rgba(7, 8, 15, 0.548); font-size: 15px;"><i class="fas fa-trash"></i> </a>
+                        {% else %}
+                        <a href="#" class="ml-2" onclick="reply_to_reply({{c.id}},'{{r.user.username}}' , {{r.id}})"  >پاسخ</a> 
+                    {% endif %}
+                  {% endif %} 
+                 
+                </div>
+                  </div>
+                </div>
+                {% endif %}
+
+
+
+
+                {% for rtr in replies %}
+                {% if rtr.reply_id == r.id and rtr.hidden == False and rtr.reply_to_reply == True and rtr.comment.id == c.id %}
+                
+                <hr>
+              <div class="mr-auto" >
+                <div class="media p-2">
+                    <img src="{{r.user.profile.image.url}}" 
+                    style=" width: 70px; height: 70px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.63) 1px 1px 2px 1px;" 
+                    class="ml-3" alt="...">
+                    <div class="media-body">
+                      
+                      <h6 class="mt-0 mb-1 ml-3">پاسخ <a href="{{rtr.username}}">{{rtr.username}} </a>به<a href="/{{r.user.username}}">  {{rtr.user.username}} </a></h6>
+                        <p class="ml-2 col-12" id="reply_text{{rtr.id}}">
+                            {{rtr.text}}
+                        </p>
+                            <div class="row mr-2" style="justify-content: flex-end;">
+                              <div  id="reply_like{{rtr.id}}" >
+                                  {% for l in rtr.like_set.all  %}
+                                            
+                                              {% if rtr.user == request.user %}
+                                              <sup>
+                                              <i style="color:rgb(73, 73, 75); font-size: 15px;" class="fas fa-user-circle"></i>
+                                              </sup>
+                                              {% endif %}
+            
+                                  {% endfor %}
+                                            <a class="ml-1" onclick="reply_like({{rtr.id}})" style="color:rgb(73, 73, 75); font-size: 15px; text-decoration: none;" href="#"><i class="fas fa-thumbs-up" ></i> {{rtr.like_set.count}}</a>     
+                                             
+                              </div>
+                              {% if request.user.is_authenticated %}
+                                  {% if rtr.user == request.user %}
+                                      <a class=" btn btn-white " onclick="reply_edit({{rtr.id}} ,'{{rtr.text}}')" style="color: rgba(7, 8, 15, 0.548); font-size: 15px;"><i class="fas fa-edit"></i> </a>
+                                      <a class=" btn btn-white " onclick="reply_remove({{rtr.id}})" style="color: rgba(7, 8, 15, 0.548); font-size: 15px;"><i class="fas fa-trash"></i> </a>
+                                      {% else %}
+                                      <a href="#" class="ml-2" onclick="reply_to_reply({{c.id}},'{{r.user.username}}' , {{r.id}})"  >پاسخ</a> 
+                                  {% endif %}
+                                {% endif %}  
+                            </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                            {%endfor%}
+                          
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div>              
+  {% endfor %}
+          
+
+
+<script>
+  function reply_like(id) {
+          $.ajax({
+            type: "GET",
+            url: "/reply/like/"+id,
+            dataType:'json',
+            success: function (data) {
+              if (data.state == 200) {
+                  $('#reply_like'+id).html("");
+                  $('#reply_like'+id).html("<i style='color:rgb(73, 73, 75); font-size: 15px;' class='fas fa-user-circle'></i>"+" <a class='ml-1' id='btn_like' onclick='reply_like("+data.id+")' style='color:rgb(73, 73, 75); font-size: 15px; text-decoration: none;'><i class='fas fa-thumbs-up'></i> "+data.count+"</a>");
+              }else if (data.state==100) {
+                  $('#reply_like'+id).html("");
+                  $('#reply_like'+id).html(" <a class='ml-1' id='btn_like' onclick='reply_like("+data.id+")' style='color:rgb(73, 73, 75); font-size: 15px; text-decoration: none;'><i class='fas fa-thumbs-up'></i> "+data.count+"</a>");
+              }else{
+                alert('Mission faild!');
+              }
+            }
+          });
+          
+        }
+
+        function reply_to_reply(id,username ,rep_id) {  
+          $("#reply_create_modal").modal('show');
+          $("#username").val(username);
+          $("#comment_id").val(id);
+          $("#sr").show();
+          $("#er").hide();
+          $("#reply_id").val(rep_id);
+          $("#username_header").html("<p style='font-size:20px'>پاسخ به "+username+"</p>");
+        }
+
+        function reply_edit(id,text) {
+          $("#reply").val("");  
+          $("#reply_create_modal").modal('show');
+          $("#username_header").html("");
+          $("#id").val(id);
+          $("#sr").hide();
+          $("#er").show();
+          $.ajax({
+            type: "GET",
+            url: "/rep/taker/"+id,
+            success: function (data) {
+              if (data.state==200) {
+                 $('#reply').val(data.text); 
+              }
+            }
+          });
+        }
+
+
+
+        
+        function reply_remove(id) {
+            $("#remove_modal").modal('show');
+              $('#delete_id').val(id);
+              $('#post_delete').hide();
+              $('#comment_delete').hide();
+              $('#reply_delete').show();
+              $('#remove_modal_lable').html("حذف پاسخ");
+              $('#remove_text').html("آیا از حذف این پاسخ مطمئن هستید؟");
+            }
+        
+</script>

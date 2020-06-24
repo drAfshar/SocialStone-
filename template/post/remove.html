@@ -1,0 +1,74 @@
+<!-- Modal -->
+<div class="modal fade" id="remove_modal" dir="rtl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="remove_modal_lable"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <input type="hidden" id="delete_id">
+        <p id="remove_text"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">انصراف</button>
+        <button type="button" id="post_delete" class="btn btn-danger">حذف</button>
+        <button type="button" id="comment_delete" class="btn btn-danger">حذف</button>
+        <button type="button" id="reply_delete" class="btn btn-danger">حذف</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+    $('#post_delete').on('click',function(){
+        id = $('#delete_id').val();
+        $.ajax({
+            type: "GET",
+            url: "/post/remove/"+id,
+            success: function (data) {
+                if (data.state==100) {
+                    alert("Mission failed!");
+                }
+            }
+        });
+    });
+
+
+
+    $('#comment_delete').on('click',function(){
+      id = $('#delete_id').val();
+        $.ajax({
+            type: "GET",
+            url: "/comment/remove/"+id,
+            success: function (data) {
+              if (data.state==200) {
+                $('#com_'+id).hide();
+                $("#remove_modal").modal('hide');
+              }else if (data.state==100) {
+                    alert("Mission failed!");
+              }
+            }
+        });
+    });
+
+    $('#reply_delete').on('click',function(){
+      id = $('#delete_id').val();
+        $.ajax({
+            type: "GET",
+            url: "/rep/remove/"+id,
+            success: function (data) {
+              if (data.state==200) {
+                $('#com_'+id).hide();
+                $("#remove_modal").modal('hide');
+              }else if (data.state==100) {
+                    alert("Mission failed!");
+                }
+            }
+        });
+    });
+</script>

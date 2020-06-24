@@ -1,0 +1,49 @@
+<!-- Modal -->
+<div class="modal fade" dir="rtl" id="view_list_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">شاهدین پست</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+
+
+            <ul class="list-unstyled">
+                {% for v in view %}
+                  <a href="/{{v.user.username}}" class="text-muted" style="text-decoration: none;">
+                    <li class="media mb-1" id="users">
+                        <img src="{{v.user.profile.image.url}}" style="width: 60px; height: 60px; border-radius: 50%;" class="mr-3" alt="...">
+                        <div class="media-body">
+                        <h5 class="mt-0 mb-1">{{v.user.username}}</h5>
+                            <p>{{v.user.profile.bio |truncatewords:15}}</p>
+                        </div>
+                    </li>
+                  </a>
+                  
+                {% endfor %}
+            </ul>
+
+
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<style>
+    #users{
+        padding: 3px;
+    }
+    #users:hover{
+        background-color:rgba(15, 15, 15, 0.048);
+        border-radius: 3px;
+        box-shadow: rgb(184, 181, 181) 1px 1px 2px 1px;
+    }
+</style>

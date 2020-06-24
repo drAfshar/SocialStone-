@@ -1,0 +1,13 @@
+{% if request.user.is_authenticated %}
+    
+    {% if like.user == request.user and like.comment.id == id %}
+    <a class="ml-auto" onclick="comment_like({{c.id}})" style="color:crimson; font-size: 18px; text-decoration: none;" href="#"><i class="fas fa-heart"></i> {{c.like_set.count}}</a>
+
+    {% else %}
+    <a class="ml-auto" onclick="comment_like({{c.id}})" style="color:crimson; font-size: 18px; text-decoration: none;" href="#"><i class="far fa-heart"></i> {{c.like_set.count}}</a>
+
+    {% endif %}
+   
+{% endif %}
+
+<p>{{like.comment.id}}</p>
